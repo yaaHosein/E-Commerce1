@@ -3,6 +3,7 @@ import data from "./data";
 import BasketView from "./BasketView";
 export default function App() {
     const [items, setItems] = useState(data);
+    const [basket, updateBasket] = useState([]);
     return <>
         {items.map((item) => {
             const { id, name, image, price, quantity, description } = item;
@@ -17,7 +18,7 @@ export default function App() {
                     </div>
                     <button
                         disabled={items.quantity === 0}
-                        onClick={() => setItems(<BasketView BasketView={BasketView} />)}
+                        onClick={() => updateBasket()(<BasketView />)}
                         className="btn"
                     >
                         Add to basket
