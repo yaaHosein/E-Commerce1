@@ -1,52 +1,37 @@
-import EntryList from "./EntryList";
-import "./App.css";
-import { useEffect, useState } from "react";
-let items = [];
+import React, { useState } from "react";
 
-if (localStorage.getItem("foo")) {
-  console.log(localStorage.getItem("foo"));
-  items = JSON.parse(localStorage.getItem("foo"));
-}
- 
-function App() {
-  let [xxx, setXxx] = useState([]);
-  console.log(xxx);
-  console.log(items);
-  console.log(localStorage.getItem("foo"));
-  useEffect(() => {
-    if (localStorage.getItem("foo") !== null) {
-      setXxx(items);
-      console.log(setXxx);
-    } else {
-      fetch("http://localhost:9300/")
-        .then((response) => {
-          response.json().then((parsedServerData) => {
-            setXxx(parsedServerData);
-            console.log(response);
-          });
-          console.log(response);
-        })
-
-        .catch((error) => {
-          console.log("error==>", error);
-        });
-    }
-  }, []);
-
-  return (
-    <div className="App">
-      <EntryList
-        items={xxx}
-        onChange={function (newItems) {
-          if (Array.isArray(newItems)) {
-            const json = JSON.stringify(newItems);
-            localStorage.setItem("foo", json);
-            // save new items in local storage
-          }
-        }}
-      />
-    </div>
+import data from "./data";
+import BasketView from "./BasketView";
+export default function App() {
+    const [items, setItems] = useState(data);
+    const Items = ({ items }) => {
+        return (
+            <>
+                {items.map((item) => {
+                    const { id, name, image, price, quantity, description } = item;
+                    return (
+                        <div key={id}>
+                            <div className="details">
+                                <h3> {name}</h3>
+                                <img src={image} alt={name} />
+                                <p>Quantity: {quantity} </p>
+                                <p>Price: {price}$</p>
+                                <p>Description: {description} </p>
+                            </div>
+                            <button
+                                disabled={items.quantity === 0}
+                                onClick={() => setItems(<BasketView BasketView={BasketView} />)}
+                                className="btn"
+                            >
+                                Add to basket
+                            </button>
+                        </div>
+                    );
+                })}
+            </>
+        );
+    };
+    return (
+        <Items items={items} />
   );
 }
-
-export default App;
